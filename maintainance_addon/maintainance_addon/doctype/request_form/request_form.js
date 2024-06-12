@@ -147,28 +147,21 @@ frappe.ui.form.on('Request Form', {
 	}
 });
 
-// Define the function to get available stock
+
 function get_available_stock(frm, item_code) {
 	console.log("Fetching available stock for item_code:", item_code);
 	frappe.call({
-		method: 'get_available_qty',
+		method: 'maintainance_addon.maintainance_addon.doctype.request_form.request_form.get_available_qty',
 		args: {
 			item_code: item_code
 		},
 		callback: function (r) {
 			if (r.message) {
-				// Add a new child row and set the item code
 				let child = frm.add_child("items", {
 					"item_code": item_code
 				});
-
-				// Refresh the child table field
 				frm.refresh_field("items");
-
-				// Set the balance_qty in the newly added child row
 				frappe.model.set_value(child.doctype, child.name, "balance_qty", r.message);
-
-				// Optional: show a message
 				frappe.msgprint(`Available stock for ${item_code}: ${r.message}`);
 			} else {
 				frappe.msgprint("No stock available for the selected item.");
